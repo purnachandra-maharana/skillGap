@@ -41,7 +41,12 @@ db.exec(`
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+
+  // Health check endpoint for cloud monitoring and Render
+  app.get("/healthz", (req, res) => {
+    res.json({ status: "ok", service: "skillgap-ai", timestamp: new Date().toISOString() });
+  });
   const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
 
   app.use(express.json());
